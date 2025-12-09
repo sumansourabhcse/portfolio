@@ -319,15 +319,37 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         except Exception:
                             irr_pct = None
 
-                        st.subheader("💹 Portfolio Summary")
-                        col1, col2, col3, col4 = st.columns(4)
+                        col1, col2, col3, col4, col5, col6 = st.columns(6)
                         col1.metric("Total Invested", f"₹ {total_invested:,.2f}")
                         col2.metric("Current Value", f"₹ {total_current:,.2f}")
                         col3.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
                         col4.metric(
-    "XIRR (annual)",
-    f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
-)
+                            "XIRR (annual)",
+                            f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
+                )
+                        
+                        latest_nav_api = None
+                        latest_nav_date = None
+                        try:
+                            latest_api_url = f"https://api.mfapi.in/mf/{fund_code}/latest"
+                            latest_api_resp = requests.get(latest_api_url, timeout=10)
+                            if latest_api_resp.status_code == 200:
+                                latest_api_json = latest_api_resp.json()
+                                if "data" in latest_api_json and len(latest_api_json["data"]) > 0:
+                                    item = latest_api_json["data"][0]
+                                    latest_nav_api = float(item["nav"])
+                                    latest_nav_date = item.get("date", None)
+                        except Exception:
+                            pass
+
+                        col5.metric(
+                            "Latest NAV (API)",
+                            f"₹ {latest_nav_api:,.4f}" if latest_nav_api else "N/A"
+                        )
+                        col6.metric(
+                            "NAV Date",
+                            latest_nav_date if latest_nav_date else "N/A"
+                        )
 
                         st.subheader("📋 Investment Details with Current Value & Gain/Loss")
                         st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
@@ -449,6 +471,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
