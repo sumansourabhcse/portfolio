@@ -220,7 +220,7 @@ if selected_fund:
     #         st.stop()
 
     # Base folder where your CSVs are stored
-    BASE_FOLDER = r"C:/Users/suman/OneDrive/Desktop/investment/mutualfund/mutualfund"   # adjust to your actual folder path
+    BASE_FOLDER = r"mutualfund"   # adjust to your actual folder path
 
     st.write("### Step 1: Reading investment CSV automatically")
 
@@ -449,3 +449,4 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
