@@ -245,7 +245,58 @@ def units_to_sell_for_profit(df_invest, latest_nav, target_profit=125000):
     }
 
 ########################################################################
+########################################################################Hello
 
+# ----- Create grouped structure -----
+fund_groups = {
+    "📌 Small Cap Funds": [
+        "Bandhan Small Cap Fund",
+        "Axis Small Cap Fund",
+        "SBI Small Cap Fund",
+        "quant Small Cap Fund",
+    ],
+    "📌 Mid Cap Funds": [
+        "Motilal Oswal Midcap Fund",
+        "HSBC Midcap Fund",
+        "Kotak Midcap Fund",
+        "quant Mid Cap Fund",
+        "Edelweiss Nifty Midcap150 Momentum 50 Index Fund",
+    ],
+    "📌 Flexi Cap Funds": [
+        "Parag Parikh Flexi Cap Fund",
+        "Kotak Flexicap Fund",
+    ],
+    "📌 Large Cap / Others": [
+        "Nippon India Large Cap Fund",
+        "Mirae Asset Large & Midcap Fund",
+        "ICICI Pru BHARAT 22 FOF",
+        "quant Focused Fund",
+        "Mirae Asset FANG+",
+        "ICICI Pru Technology Fund",
+        "SBI Magnum Children's Benefit Fund",
+    ]
+}
+
+# ---- Create a flattened list with headings ----
+display_list = []
+for group, items in fund_groups.items():
+    display_list.append(group)   # Header
+    display_list.extend(items)   # Items
+
+# ----- Sidebar -----
+selected_item = st.sidebar.selectbox("Select a Mutual Fund", display_list)
+
+# If user selects a header, ignore it
+if selected_item.startswith("📌"):
+    st.sidebar.warning("Please select a fund (not a category).")
+else:
+    selected_fund = selected_item
+    fund_code = mutual_funds[selected_fund]
+    st.write(f"Selected: {selected_fund} — Code: {fund_code}")
+
+
+
+##########################################################################
 # ---------------------------------------
 # Single fund flow (your original UI) - unchanged behaviour + XIRR added
 # ---------------------------------------
@@ -572,6 +623,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
