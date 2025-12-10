@@ -289,6 +289,19 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                     fig.update_layout(hovermode="x unified")
                     st.plotly_chart(fig, use_container_width=True)
 
+                    # show NAV table
+                    st.subheader("📋 NAV Table")
+                    # sort by date descending
+                    df_nav["date"] = df_nav["date"].dt.date
+                    df_nav_sorted = df_nav.sort_values(by="date", ascending=False)
+
+                    col11, col12, col13 = st.columns([1, 2, 2])
+
+                    with col11:
+                    # display only Date + NAV columns
+                        st.dataframe(df_nav_sorted.reset_index(drop=True), use_container_width=True)
+
+
                     # Current value & gains
                     latest_nav = df_nav.iloc[-1]["nav"]
                     # ensure Units and Amount present
@@ -471,6 +484,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
