@@ -177,6 +177,52 @@ def xirr(cashflows, dates, guess=0.1):
         rate = new_rate
     return rate
 
+############################################
+
+def units_to_sell_for_profit(df_invest, latest_nav, target_profit=125000):
+    """
+    Calculate how many units to sell (FIFO) to achieve target profit.
+    Profit excludes investment amount.
+    """
+    # Sort by Date ascending (FIFO)
+    df_fifo = df_invest.sort_values("Date").copy()
+    df_fifo["CostPerUnit"] = df_fifo["Amount"] / df_fifo["Units"]
+
+    total_profit = 0.0
+    units_sold = 0.0
+    sale_value = 0.0
+
+    for _, row in df_fifo.iterrows():
+        cost_per_unit = row["CostPerUnit"]
+        profit_per_unit = latest_nav - cost_per_unit
+        if profit_per_unit <= 0:
+            continue  # no profit from this lot
+
+        # Max profit possible from this lot
+        lot_profit = profit_per_unit * row["Units"]
+
+        if total_profit + lot_profit >= target_profit:
+            # Only partial units needed from this lot
+            remaining_profit = target_profit - total_profit
+            units_needed = remaining_profit / profit_per_unit
+            units_sold += units_needed
+            sale_value += units_needed * latest_nav
+            total_profit += remaining_profit
+            break
+        else:
+            # Sell entire lot
+            units_sold += row["Units"]
+            sale_value += row["Units"] * latest_nav
+            total_profit += lot_profit
+
+    return {
+        "Units to Sell": units_sold,
+        "Sale Value": sale_value,
+        "Profit Achieved": total_profit
+    }
+
+########################################################################
+
 # ---------------------------------------
 # Single fund flow (your original UI) - unchanged behaviour + XIRR added
 # ---------------------------------------
@@ -371,6 +417,14 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                             "NAV Date",
                             latest_nav_date if latest_nav_date else "N/A"
                         )
+#####################################
+                        if latest_nav_api:
+                            result = units_to_sell_for_profit(df_invest, latest_nav_api, target_profit=125000)
+                            st.subheader("🎯 Units to Sell for Target Profit")
+                            st.metric("Units to Sell", f"{result['Units to Sell']:.2f}")
+                            st.metric("Sale Value", f"₹ {result['Sale Value']:,.2f}")
+                            st.metric("Profit Achieved", f"₹ {result['Profit Achieved']:,.2f}")
+#######################################
 
                         st.subheader("📋 Investment Details with Current Value & Gain/Loss")
                         st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), use_container_width=True)
@@ -492,6 +546,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
