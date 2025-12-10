@@ -199,10 +199,11 @@ if selected_fund:
                 st.write("### 🏦 Fund Details")
                 st.markdown(f"""
                 - **Scheme Name:** {meta.get('scheme_name','N/A')}
-                - **AMC:** {meta.get('amc','N/A')}
-                - **Category:** {meta.get('category','N/A')}
+                - **AMC:** {meta.get('fund_house','N/A')}
+                - **Category:** {meta.get('scheme_category','N/A')}
                 - **Scheme Type:** {meta.get('scheme_type','N/A')}
                 - **Fund Code:** {fund_code}
+                - **ISIN:** {meta.get('isin_growth','N/A')}
                 """)
     except Exception:
         st.warning("Could not fetch fund details from API.")
@@ -484,6 +485,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
