@@ -34,23 +34,29 @@ st.title("📈 Mutual Fund Dashboard")
 # ---------------------------------------
 mutual_funds = {
     "Bandhan Small Cap Fund": "147946",
-    "Motilal Oswal Midcap Fund": "127042",
-    "Nippon India Large Cap Fund": "118632",
-    "Mirae Asset FANG+": "148928",
-    "Parag Parikh Flexi Cap Fund": "122639",
-    "ICICI Pru Technology Fund": "120594",
-    "quant Small Cap Fund": "120828",
-    "Kotak Midcap Fund": "119775",
+    "Axis Small Cap Fund": "125354",
     "SBI Small Cap Fund": "125497",
+    "quant Small Cap Fund": "120828",
+    
+    "Motilal Oswal Midcap Fund": "127042",
+    "HSBC Midcap Fund": "151034",
+    "Kotak Midcap Fund": "119775",
+    "quant Mid Cap Fund": "120841",
+    "Edelweiss Nifty Midcap150 Momentum 50 Index Fund": "150902",
+
+    "Parag Parikh Flexi Cap Fund": "122639",
+     "Kotak Flexicap Fund": "112090",
+    
+    "Nippon India Large Cap Fund": "118632",
     "Mirae Asset Large & Midcap Fund": "118834",
     "ICICI Pru BHARAT 22 FOF": "143903",
-    "Edelweiss Nifty Midcap150 Momentum 50 Index Fund": "150902",
-    "Axis Small Cap Fund": "125354",
-    "quant Mid Cap Fund": "120841",
     "quant Focused Fund": "120834",
-    "HSBC Midcap Fund": "151034",
-    "SBI Magnum Children's Benefit Fund": "148490",
-    "Kotak Flexicap Fund": "112090"
+    
+    
+    "Mirae Asset FANG+": "148928",
+    "ICICI Pru Technology Fund": "120594",
+    "SBI Magnum Children's Benefit Fund": "148490"
+   
 }
 
 st.sidebar.header("Your Mutual Funds")
@@ -566,6 +572,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
