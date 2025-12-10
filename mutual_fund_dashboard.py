@@ -242,6 +242,13 @@ if os.path.exists(file_path):
 
     st.subheader(f"💰 Investment Details: {selected_fund}")
     st.dataframe(df_invest, use_container_width=True)
+    st.write("### 📊 Average Buy NAV")
+
+    # Weighted average NAV = sum(Units * NAV) / sum(Units)
+    total_units = df_invest["Units"].sum()
+    weighted_nav = (df_invest["Units"] * df_invest["NAV"]).sum() / total_units
+
+    st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
 
     # Step 2: date range
     st.write("### Step 2: Select NAV Date Range")
@@ -485,6 +492,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
