@@ -367,6 +367,7 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         df_invest_current["Gain/Loss"] = df_invest_current["Current Value"] - df_invest_current["Amount"]
                         total_invested = df_invest_current["Amount"].sum()
                         total_current = df_invest_current["Current Value"].sum()
+                        total_units = df_invest_current["Units"].sum()
                         total_gain = total_current - total_invested
 
                         # XIRR calculation: cashflows = investments (negative), final positive current value at last nav date
@@ -386,11 +387,12 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         except Exception:
                             irr_pct = None
 
-                        col1, col2, col3, col4, col5, col6 = st.columns(6)
+                        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
                         col1.metric("Total Invested", f"₹ {total_invested:,.2f}")
                         col2.metric("Current Value", f"₹ {total_current:,.2f}")
-                        col3.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
-                        col4.metric(
+                        col3.metric("Total Unis",f" {total_units:,.2f}"
+                        col4.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
+                        col5.metric(
                             "XIRR (annual)",
                             f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
                 )
@@ -409,11 +411,11 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         except Exception:
                             pass
 
-                        col5.metric(
+                        col6.metric(
                             "Latest NAV (API)",
                             f"₹ {latest_nav_api:,.4f}" if latest_nav_api else "N/A"
                         )
-                        col6.metric(
+                        col7.metric(
                             "NAV Date",
                             latest_nav_date if latest_nav_date else "N/A"
                         )
@@ -546,6 +548,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
