@@ -9,6 +9,23 @@ import csv
 import math
 import os
 
+st.markdown("""
+    <style>
+    /* Reduce metric label text size */
+    div.css-1xarl3l span {
+        font-size: 14px !important;
+    }
+
+    /* Reduce metric value text size */
+    div.css-1xarl3l div {
+        font-size: 18px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
+
+
 st.set_page_config(page_title="Mutual Fund Dashboard", layout="wide")
 st.title("📈 Mutual Fund Dashboard")
 
@@ -549,6 +566,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
