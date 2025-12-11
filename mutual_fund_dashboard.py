@@ -425,10 +425,9 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         #     f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
                         # )
                         col5.markdown(f"<h6>XIRR (annual)</h6><p style='font-size:20px;'>{irr_pct:.2f}%</p>",unsafe_allow_html=True) 
-                            if 
-                                isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) 
-                            else 
-                                col5.markdown("<h6>XIRR (annual)</h6><p style='font-size:20px;'>N/A</p>", unsafe_allow_html=True)
+                            if{ isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) }
+                            else {
+                                col5.markdown("<h6>XIRR (annual)</h6><p style='font-size:20px;'>N/A</p>", unsafe_allow_html=True)}
                         
                         latest_nav_api = None
                         latest_nav_date = None
@@ -595,6 +594,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
