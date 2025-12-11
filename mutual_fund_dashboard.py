@@ -8,6 +8,38 @@ import io
 import csv
 import math
 import os
+import random
+
+
+
+
+
+def random_light_color():
+    # Generate a random light pastel color
+    r = random.randint(200, 255)
+    g = random.randint(200, 255)
+    b = random.randint(200, 255)
+    return f"rgb({r},{g},{b})"
+
+if selected_fund:
+    # Pick a new random light color for each fund
+    bg_color = random_light_color()
+
+    # Inject CSS to set background
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: {bg_color};
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
+
 
 st.markdown("""
     <style>
@@ -718,6 +750,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
