@@ -40,6 +40,7 @@ fund_logos = {
 "143903" : "mutualfund/logo/ICICI.jpg",
 "120841" : "mutualfund/logo/quant.jpeg",
 "148490" : "mutualfund/logo/sbi.png",
+"120834" : "mutualfund/logo/quant.jpeg",
 "112090" : "mutualfund/logo/Kotak.png"
 }
 
@@ -662,6 +663,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
