@@ -385,46 +385,46 @@ if os.path.exists(file_path):
     col1.markdown(f"<h6>Average Buy NAV</h6><p style='font-size:20px;'>₹ {weighted_nav:.2f}</p>",unsafe_allow_html=True)
 
    # st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
-
-    # Step 2: date range
-    st.write("### Select NAV Date Range")
-    default_start = df_invest["Date"].min().date()
-    default_end = datetime.today().date()
-    selected_dates = st.date_input(
-        "Select NAV Date Range",
-        value=(default_start, default_end),
-        min_value=default_start,
-        max_value=default_end,
-        key=f"{selected_fund}_nav"
-    )
-
-    if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
-        start_date, end_date = selected_dates
+    with col2:
+        # Step 2: date range
+        st.write("### Select NAV Date Range")
+        default_start = df_invest["Date"].min().date()
+        default_end = datetime.today().date()
+        selected_dates = st.date_input(
+            "Select NAV Date Range",
+            value=(default_start, default_end),
+            min_value=default_start,
+            max_value=default_end,
+            key=f"{selected_fund}_nav"
+        )
+    
+        if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
+            start_date, end_date = selected_dates
+        else:
+            st.error("Please select a valid start and end date.")
+            st.stop()
+    
+        # Continue with NAV fetch and portfolio summary...
     else:
-        st.error("Please select a valid start and end date.")
+        st.error(f"No CSV file found for {selected_fund} in {BASE_FOLDER}")
         st.stop()
-
-    # Continue with NAV fetch and portfolio summary...
-else:
-    st.error(f"No CSV file found for {selected_fund} in {BASE_FOLDER}")
-    st.stop()
-
-
-if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
-            api_url = f"https://api.mfapi.in/mf/{fund_code}?startDate={start_date}&endDate={end_date}"
-            st.write(f"📡 Fetching NAV data from API...")
-            resp = requests.get(api_url)
-            if resp.status_code != 200:
-                st.error("API fetch failed.")
-            else:
-                j = resp.json()
-                if "data" not in j or not j["data"]:
-                    st.error("No NAV data for selected range.")
+    
+    
+    if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
+                api_url = f"https://api.mfapi.in/mf/{fund_code}?startDate={start_date}&endDate={end_date}"
+                st.write(f"📡 Fetching NAV data from API...")
+                resp = requests.get(api_url)
+                if resp.status_code != 200:
+                    st.error("API fetch failed.")
                 else:
-                    df_nav = pd.DataFrame(j["data"])
-                    df_nav["date"] = pd.to_datetime(df_nav["date"], format="%d-%m-%Y")
-                    df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
-                    df_nav = df_nav.sort_values("date")
+                    j = resp.json()
+                    if "data" not in j or not j["data"]:
+                        st.error("No NAV data for selected range.")
+                    else:
+                        df_nav = pd.DataFrame(j["data"])
+                        df_nav["date"] = pd.to_datetime(df_nav["date"], format="%d-%m-%Y")
+                        df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
+                        df_nav = df_nav.sort_values("date")
 
                     col1, col2 = st.columns([3, 1])
 
@@ -759,6 +759,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
