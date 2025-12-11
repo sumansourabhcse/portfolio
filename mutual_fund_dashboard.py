@@ -21,21 +21,7 @@ def random_light_color():
     b = random.randint(200, 255)
     return f"rgb({r},{g},{b})"
 
-if selected_fund:
-    # Pick a new random light color for each fund
-    bg_color = random_light_color()
 
-    # Inject CSS to set background
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-color: {bg_color};
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
 
 
 
@@ -305,6 +291,26 @@ def units_to_sell_for_profit(df_invest, latest_nav, target_profit=125000):
 st.sidebar.markdown("---")
 st.sidebar.header("Single Fund View")
 selected_fund = st.sidebar.radio("Select a Mutual Fund (Single view)", list(mutual_funds.keys()), index=0, key="single_select")
+
+
+
+if selected_fund:
+    # Pick a new random light color for each fund
+    bg_color = random_light_color()
+
+    # Inject CSS to set background
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: {bg_color};
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 
 if selected_fund:
     fund_code = mutual_funds[selected_fund]
@@ -750,6 +756,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
