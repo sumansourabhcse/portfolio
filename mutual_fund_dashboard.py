@@ -537,7 +537,7 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
 
                         st.subheader("📋 Investment Details with Current Value & Gain/Loss")
                         df_invest_current['Date'] = pd.to_datetime(df_invest_current['Date']).dt.date
-                        st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), width=1000)
+                        st.dataframe(df_invest_current.sort_values("Date", ascending=True).reset_index(drop=True), width=1000)
 
 # -----------------------
 # Overview (all funds at once)
@@ -669,6 +669,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
