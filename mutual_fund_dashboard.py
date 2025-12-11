@@ -410,21 +410,21 @@ else:
     st.stop()
     
     
-        if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
-                    api_url = f"https://api.mfapi.in/mf/{fund_code}?startDate={start_date}&endDate={end_date}"
-                    st.write(f"📡 Fetching NAV data from API...")
-                    resp = requests.get(api_url)
-                    if resp.status_code != 200:
-                        st.error("API fetch failed.")
+    if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
+                api_url = f"https://api.mfapi.in/mf/{fund_code}?startDate={start_date}&endDate={end_date}"
+                st.write(f"📡 Fetching NAV data from API...")
+                resp = requests.get(api_url)
+                if resp.status_code != 200:
+                    st.error("API fetch failed.")
+                else:
+                    j = resp.json()
+                    if "data" not in j or not j["data"]:
+                        st.error("No NAV data for selected range.")
                     else:
-                        j = resp.json()
-                        if "data" not in j or not j["data"]:
-                            st.error("No NAV data for selected range.")
-                        else:
-                            df_nav = pd.DataFrame(j["data"])
-                            df_nav["date"] = pd.to_datetime(df_nav["date"], format="%d-%m-%Y")
-                            df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
-                            df_nav = df_nav.sort_values("date")
+                        df_nav = pd.DataFrame(j["data"])
+                        df_nav["date"] = pd.to_datetime(df_nav["date"], format="%d-%m-%Y")
+                        df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
+                        df_nav = df_nav.sort_values("date")
 
                     col1, col2 = st.columns([3, 1])
 
@@ -759,6 +759,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
