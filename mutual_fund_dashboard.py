@@ -386,25 +386,25 @@ if os.path.exists(file_path):
 
    # st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
     
-            # Step 2: date range
-            st.write("### Select NAV Date Range")
-            default_start = df_invest["Date"].min().date()
-            default_end = datetime.today().date()
-            selected_dates = st.date_input(
-                "Select NAV Date Range",
-                value=(default_start, default_end),
-                min_value=default_start,
-                max_value=default_end,
-                key=f"{selected_fund}_nav"
-            )
-        
-            if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
-                start_date, end_date = selected_dates
-            else:
-                st.error("Please select a valid start and end date.")
-                st.stop()
-        
-            # Continue with NAV fetch and portfolio summary...
+    # Step 2: date range
+    st.write("### Select NAV Date Range")
+    default_start = df_invest["Date"].min().date()
+    default_end = datetime.today().date()
+    selected_dates = st.date_input(
+        "Select NAV Date Range",
+        value=(default_start, default_end),
+        min_value=default_start,
+        max_value=default_end,
+        key=f"{selected_fund}_nav"
+    )
+
+    if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
+        start_date, end_date = selected_dates
+    else:
+        st.error("Please select a valid start and end date.")
+        st.stop()
+
+    # Continue with NAV fetch and portfolio summary...
 else:
     st.error(f"No CSV file found for {selected_fund} in {BASE_FOLDER}")
     st.stop()
@@ -759,6 +759,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
