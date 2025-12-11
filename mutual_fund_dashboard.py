@@ -385,18 +385,23 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                     df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
                     df_nav = df_nav.sort_values("date")
 
+                    col1, col2 = st.columns([3, 1])
+
+
                     # Plot interactive NAV chart
-                    st.subheader(f"📈 NAV Chart: {selected_fund}")
-                    fig = px.line(df_nav, x="date", y="nav", labels={"date":"Date","nav":"NAV"}, template="plotly_white")
-                    fig.update_traces(mode="lines+markers", hovertemplate="Date: %{x}<br>NAV: %{y}")
-                    fig.update_layout(hovermode="x unified")
-                    st.plotly_chart(fig, use_container_width=True)
+                    with col1:
+                        st.subheader(f"📈 NAV Chart: {selected_fund}")
+                        fig = px.line(df_nav, x="date", y="nav", labels={"date":"Date","nav":"NAV"}, template="plotly_white")
+                        fig.update_traces(mode="lines+markers", hovertemplate="Date: %{x}<br>NAV: %{y}")
+                        fig.update_layout(hovermode="x unified")
+                        st.plotly_chart(fig, use_container_width=True)
 
                     # show NAV table
-                    st.subheader("📋 NAV Table")
-                    # sort by date descending
-                    df_nav["date"] = df_nav["date"].dt.date
-                    df_nav_sorted = df_nav.sort_values(by="date", ascending=False)
+                    with col2:
+                        st.subheader("📋 NAV Table")
+                        # sort by date descending
+                        df_nav["date"] = df_nav["date"].dt.date
+                        df_nav_sorted = df_nav.sort_values(by="date", ascending=False)
 
                     col11, col12, col13 = st.columns([1, 2, 2])
 
@@ -663,6 +668,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
