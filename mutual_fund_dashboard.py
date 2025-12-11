@@ -493,6 +493,8 @@ if overview_button:
 
             # fetch latest NAV from API if possible
             latest_nav = None
+            latest_nav_date = None
+
          
             matched_code = mutual_funds.get(fund_name)
 
@@ -510,14 +512,18 @@ if overview_button:
                         navs["nav"] = pd.to_numeric(navs["nav"], errors="coerce")
                         navs = navs.sort_values("date")
                         latest_nav = float(navs.iloc[-1]["nav"])
+                        latest_nav_date = navs.iloc[-1]["date"] 
                       
                 except Exception:
                     pass
 
             if latest_nav is None and "NAV" in dff.columns and dff["NAV"].notna().any():
                 latest_nav = float(dff["NAV"].dropna().iloc[0])
+                latest_nav_date = pd.to_datetime(dff["Date"].max())
             if latest_nav is None:
                 latest_nav = 0.0
+                latest_nav_date = None
+
 
             units_sum = dff["Units"].sum() if "Units" in dff.columns else 0.0
             current_value = units_sum * latest_nav
@@ -543,7 +549,7 @@ if overview_button:
                 "Invested": invested,
                 "Units": units_sum,
                 "Latest NAV": latest_nav,
-               # "Latest NAV Date": (latest_nav_date.strftime("%Y-%m-%d") if latest_nav_date is not None else "N/A"),
+                "Latest NAV Date": (latest_nav_date.strftime("%Y-%m-%d") if latest_nav_date is not None else "N/A"),
                 "Current Value": current_value,
                 "XIRR (%)": (f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A")
             })
@@ -580,6 +586,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
