@@ -346,7 +346,7 @@ if os.path.exists(file_path):
     st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
 
     # Step 2: date range
-    st.write("### Step 2: Select NAV Date Range")
+    st.write("### Select NAV Date Range")
     default_start = df_invest["Date"].min().date()
     default_end = datetime.today().date()
     selected_dates = st.date_input(
@@ -663,6 +663,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
