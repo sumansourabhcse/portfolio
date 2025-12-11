@@ -414,9 +414,12 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
                         #col1.metric("Total Invested", f"₹ {total_invested:,.2f}")
                         col1.markdown(f"<h6>Total Invested</h6><p style='font-size:20px;'>₹ {total_invested:,.2f}</p>",unsafe_allow_html=True)
-                        col2.metric("Current Value", f"₹ {total_current:,.2f}")
-                        col3.metric("Total Unis",f" {total_units:,.2f}")
-                        col4.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
+                        #col2.metric("Current Value", f"₹ {total_current:,.2f}")
+                        col2.markdown(f"<h6>Current Value</h6><p style='font-size:20px;'>₹ {total_current:,.2f}</p>",unsafe_allow_html=True)
+                        #col3.metric("Total Unis",f" {total_units:,.2f}")
+                        col3.markdown(f"<h6>Total Unis</h6><p style='font-size:20px;'>{total_units:,.2f}</p>",unsafe_allow_html=True)
+                        #col4.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
+                        col4.markdown(f"<h6>Absolute Gain/Loss</h6><p style='font-size:20px;'>₹ {total_gain:,.2f}</p>",unsafe_allow_html=True)
                         col5.metric(
                             "XIRR (annual)",
                             f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
@@ -587,6 +590,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
