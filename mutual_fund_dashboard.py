@@ -343,7 +343,7 @@ if os.path.exists(file_path):
     total_units = df_invest["Units"].sum()
     weighted_nav = (df_invest["Units"] * df_invest["NAV"]).sum() / total_units
 
-    st.metric(value=f"{weighted_nav:.2f}")
+    st.metric(label="", value=f"{weighted_nav:.2f}")
 
     # Step 2: date range
     st.write("### Select NAV Date Range")
@@ -718,6 +718,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
