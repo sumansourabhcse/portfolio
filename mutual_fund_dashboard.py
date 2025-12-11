@@ -412,7 +412,8 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                             irr_pct = None
 
                         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-                        col1.metric("Total Invested", f"₹ {total_invested:,.2f}")
+                        #col1.metric("Total Invested", f"₹ {total_invested:,.2f}")
+                        col1.markdown(f"<h4>Total Invested</h4><p style='font-size:14px;'>₹ {total_invested:,.2f}</p>",unsafe_allow_html=True)
                         col2.metric("Current Value", f"₹ {total_current:,.2f}")
                         col3.metric("Total Unis",f" {total_units:,.2f}")
                         col4.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
@@ -586,6 +587,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
