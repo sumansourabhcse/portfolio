@@ -466,7 +466,7 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         if latest_nav_api:
                             nav_str = f"₹ {latest_nav_api:,.4f}"
                         else:
-                        nav_str = "N/A"
+                            nav_str = "N/A"
 
                         col6.markdown(
                             f"""
@@ -625,6 +625,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
