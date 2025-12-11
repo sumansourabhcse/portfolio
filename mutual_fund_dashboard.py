@@ -454,21 +454,7 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                             "Gain/Loss": total_gain,
                             "Cumulative Gain": total_cumulative
                         }
-                        df_invest_current = pd.concat([df_invest_current, pd.DataFrame([totals_row])], ignore_index=True)
-                    
-                        # Convert Date column to string (to keep TOTAL visible)
-                        df_invest_current["Date"] = df_invest_current["Date"].astype(str)
-                    
-                        # --- Styling function ---
-                        def highlight_total(row):
-                            return ['background-color: #f0f0f0; font-weight: bold; color: darkblue;' 
-                                    if row["Date"] == "TOTAL" else '' for _ in row]
-                    
-                        styled_df = df_invest_current.style.apply(highlight_total, axis=1)
-                    
-                        # Display
-                        st.subheader("📋 Investment Details with Current Value, Gain/Loss & Cumulative Gain")
-                        st.dataframe(styled_df, width=1000)
+
 
     ############################################################################
 
@@ -582,9 +568,25 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         #     st.metric("Profit Achieved", f"₹ {result['Profit Achieved']:,.2f}")
 #######################################
 
-                        st.subheader("📋 Investment Details with Current Value & Gain/Loss")
-                        df_invest_current['Date'] = pd.to_datetime(df_invest_current['Date']).dt.date
-                        st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), width=1000)
+                        df_invest_current = pd.concat([df_invest_current, pd.DataFrame([totals_row])], ignore_index=True)
+                    
+                        # Convert Date column to string (to keep TOTAL visible)
+                        df_invest_current["Date"] = df_invest_current["Date"].astype(str)
+                    
+                        # --- Styling function ---
+                        def highlight_total(row):
+                            return ['background-color: #f0f0f0; font-weight: bold; color: darkblue;' 
+                                    if row["Date"] == "TOTAL" else '' for _ in row]
+                    
+                        styled_df = df_invest_current.style.apply(highlight_total, axis=1)
+                    
+                        # Display
+                        st.subheader("📋 Investment Details with Current Value, Gain/Loss & Cumulative Gain")
+                        st.dataframe(styled_df, width=1000)
+
+                        # st.subheader("📋 Investment Details with Current Value & Gain/Loss")
+                        # df_invest_current['Date'] = pd.to_datetime(df_invest_current['Date']).dt.date
+                        # st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), width=1000)
 
 # -----------------------
 # Overview (all funds at once)
@@ -716,6 +718,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
