@@ -23,6 +23,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+ fund_logos = {
+
+"125354" : "mutualfund/logo/axis.png",
+"147946" : "mutualfund/logo/bandhan.png",
+"150902" : "mutualfund/logo/edelweiss.jpg",
+"151034" : "mutualfund/logo/hsbc.png",
+"120594" : "mutualfund/logo/ICICI.jpg",
+"119775" : "mutualfund/logo/Kotak.png",
+"148928" : "mutualfund/logo/mirae.png",
+"127042" : "mutualfund/logo/motilal.png",
+"118632" : "mutualfund/logo/nippon.png",
+"122639" : "mutualfund/logo/parag.jpg",
+"120828" : "mutualfund/logo/quant.jpeg",
+"125497" : "mutualfund/logo/sbi.png",
+"118834" : "mutualfund/logo/mirae.png",
+"143903" : "mutualfund/logo/ICICI.jpg",
+"120841" : "mutualfund/logo/quant.jpeg",
+"148490" : "mutualfund/logo/sbi.png",
+"112090" : "mutualfund/logo/Kotak.png"
+}
 
 
 
@@ -638,6 +658,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
