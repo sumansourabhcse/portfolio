@@ -420,10 +420,28 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         col3.markdown(f"<h6>Total Unis</h6><p style='font-size:20px;'>{total_units:,.2f}</p>",unsafe_allow_html=True)
                         #col4.metric("Absolute Gain/Loss", f"₹ {total_gain:,.2f}")
                         col4.markdown(f"<h6>Absolute Gain/Loss</h6><p style='font-size:20px;'>₹ {total_gain:,.2f}</p>",unsafe_allow_html=True)
-                        col5.metric(
-                            "XIRR (annual)",
-                            f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
+                        # col5.metric(
+                        #     "XIRR (annual)",
+                        #     f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A"
+                        # )
+
+                        if (irr_pct is not None) and pd.notna(irr_pct):
+                            xirr_str = f"{irr_pct:.2f}%"
+                            color = "green" if irr_pct >= 0 else "red"  # optional: color-code by sign
+                        else:
+                            xirr_str = "N/A"
+                            color = "#666"
+
+                        col5.markdown(
+                            f"""
+                            <div>
+                              <div style="font-size:12px; font-weight:600; color:#555;">XIRR (annual)</div>
+                              <div style="font-size:20px; color:{color};">{xirr_str}</div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
                         )
+
                         
 
                         
@@ -592,6 +610,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
