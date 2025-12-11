@@ -564,7 +564,7 @@ if overview_button:
         # per-fund table
         st.subheader("Per-fund Summary")
         df_summary = pd.DataFrame(per_fund_summary).sort_values("Current Value", ascending=False).reset_index(drop=True)
-        st.dataframe(df_summary, use_container_width=True)
+        st.dataframe(df_summary, width=800)
 
         # Allocation pie
         st.subheader("Allocation: Current Value by Fund")
@@ -586,6 +586,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
