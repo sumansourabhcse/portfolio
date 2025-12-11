@@ -406,9 +406,9 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
 
                     col11, col12, col13 = st.columns([1, 2, 2])
 
-                    with col11:
+                  #  with col11:
                     # display only Date + NAV columns
-                        st.dataframe(df_nav_sorted.reset_index(drop=True), use_container_width=True)
+                     #   st.dataframe(df_nav_sorted.reset_index(drop=True), use_container_width=True)
 
 
                     # Current value & gains
@@ -669,6 +669,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
