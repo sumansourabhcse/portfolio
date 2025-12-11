@@ -23,8 +23,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
- fund_logos = {
-
+fund_logos = {
 "125354" : "mutualfund/logo/axis.png",
 "147946" : "mutualfund/logo/bandhan.png",
 "150902" : "mutualfund/logo/edelweiss.jpg",
@@ -658,6 +657,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
