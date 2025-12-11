@@ -381,7 +381,10 @@ if os.path.exists(file_path):
     total_units = df_invest["Units"].sum()
     weighted_nav = (df_invest["Units"] * df_invest["NAV"]).sum() / total_units
 
-    st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
+    col1,col2 = st.columns([1,2])
+    col1.markdown(f"<h6>Average Buy NAV</h6><p style='font-size:20px;'>₹ {weighted_nav:.2f}</p>",unsafe_allow_html=True)
+
+   # st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
 
     # Step 2: date range
     st.write("### Select NAV Date Range")
@@ -756,6 +759,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
