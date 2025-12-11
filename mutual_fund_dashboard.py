@@ -435,7 +435,7 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         col5.markdown(
                             f"""
                             <div>
-                              <div style="font-size:12px; font-weight:600; color:#555;">XIRR (annual)</div>
+                              <div style="font-size:16px; font-weight:600; color:#555;"><b>XIRR (annual)</b></div>
                               <div style="font-size:20px; color:{color};">{xirr_str}</div>
                             </div>
                             """,
@@ -610,6 +610,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
