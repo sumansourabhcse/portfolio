@@ -385,7 +385,7 @@ if os.path.exists(file_path):
     col1.markdown(f"<h6>Average Buy NAV</h6><p style='font-size:20px;'>₹ {weighted_nav:.2f}</p>",unsafe_allow_html=True)
 
    # st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
-    with col2:
+    
             # Step 2: date range
             st.write("### Select NAV Date Range")
             default_start = df_invest["Date"].min().date()
@@ -759,6 +759,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
