@@ -277,6 +277,11 @@ if selected_fund:
     fund_code = mutual_funds[selected_fund]
     st.subheader(f"📌 Selected Fund: {selected_fund}")
 
+    logo_url = fund_logos.get(fund_code)
+    if logo_url:
+        st.image(logo_url, width=120)  # adjust width as needed
+
+
         # Fund details from MFAPI
     try:
         meta_url = f"https://api.mfapi.in/mf/{fund_code}"
@@ -657,6 +662,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
