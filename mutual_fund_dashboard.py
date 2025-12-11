@@ -493,6 +493,7 @@ if overview_button:
 
             # fetch latest NAV from API if possible
             latest_nav = None
+            port_nav_date = None
             matched_code = mutual_funds.get(fund_name)
             if matched_code:
                 try:
@@ -505,6 +506,7 @@ if overview_button:
                         navs["nav"] = pd.to_numeric(navs["nav"], errors="coerce")
                         navs = navs.sort_values("date")
                         latest_nav = float(navs.iloc[-1]["nav"])
+                        port_nav_date = navs["date"]
                 except Exception:
                     pass
 
@@ -537,6 +539,7 @@ if overview_button:
                 "Invested": invested,
                 "Units": units_sum,
                 "Latest NAV": latest_nav,
+                "Nav Date" : port_nav_date,
                 "Current Value": current_value,
                 "XIRR (%)": (f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A")
             })
@@ -573,6 +576,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
