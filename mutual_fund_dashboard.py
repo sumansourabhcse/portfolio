@@ -337,7 +337,7 @@ if os.path.exists(file_path):
 
     st.subheader(f"💰 Investment Details: {selected_fund}")
     st.dataframe(df_invest, width=1000)
-    st.write("### 📊 Average Buy NAV")
+    st.write("#### 📊 Average Buy NAV")
 
     # Weighted average NAV = sum(Units * NAV) / sum(Units)
     total_units = df_invest["Units"].sum()
@@ -718,6 +718,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
