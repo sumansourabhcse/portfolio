@@ -311,7 +311,7 @@ if os.path.exists(file_path):
         st.stop()
 
     st.subheader(f"💰 Investment Details: {selected_fund}")
-    st.dataframe(df_invest, use_container_width=True)
+    st.dataframe(df_invest, width=1000)
     st.write("### 📊 Average Buy NAV")
 
     # Weighted average NAV = sum(Units * NAV) / sum(Units)
@@ -564,7 +564,7 @@ if overview_button:
         # per-fund table
         st.subheader("Per-fund Summary")
         df_summary = pd.DataFrame(per_fund_summary).sort_values("Current Value", ascending=False).reset_index(drop=True)
-        st.dataframe(df_summary, width=800)
+        st.dataframe(df_summary, width=1000)
 
         # Allocation pie
         st.subheader("Allocation: Current Value by Fund")
@@ -586,6 +586,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
