@@ -478,9 +478,22 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                             unsafe_allow_html=True
                         )
 
-                        col7.metric(
-                            "NAV Date",
-                            latest_nav_date if latest_nav_date else "N/A"
+                        # col7.metric(
+                        #     "NAV Date",
+                        #     latest_nav_date if latest_nav_date else "N/A"
+                        # )
+                        if latest_nav_date:
+                            nav_date = latest_nav_date
+                        else:
+                            nav_date = "N/A"
+                        col7.markdown(
+                            f"""
+                            <div>
+                              <div style="font-size:16px; font-weight:600; color:#555;"><b>NAV Date</b></div>
+                              <div style="font-size:20px; color:#333;">{nav_date}</div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
                         )
 #####################################
                         if latest_nav_api:
@@ -625,6 +638,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
