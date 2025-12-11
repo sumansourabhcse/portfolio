@@ -21,7 +21,21 @@ def random_light_color():
     b = random.randint(200, 255)
     return f"rgb({r},{g},{b})"
 
+if selected_fund:
+    # Pick a new random light color for each fund
+    bg_color = random_light_color()
 
+    # Inject CSS to set background
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: {bg_color};
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 
@@ -292,26 +306,6 @@ st.sidebar.markdown("---")
 st.sidebar.header("Single Fund View")
 selected_fund = st.sidebar.radio("Select a Mutual Fund (Single view)", list(mutual_funds.keys()), index=0, key="single_select")
 
-
-
-if selected_fund:
-    # Pick a new random light color for each fund
-    bg_color = random_light_color()
-
-    # Inject CSS to set background
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-color: {bg_color};
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-
 if selected_fund:
     fund_code = mutual_funds[selected_fund]
     st.subheader(f"📌 Selected Fund: {selected_fund}")
@@ -375,17 +369,14 @@ if os.path.exists(file_path):
 
     st.subheader(f"💰 Investment Details: {selected_fund}")
     st.dataframe(df_invest, width=1000)
-   # st.write("#### 📊 Average Buy NAV")
+    st.write("#### 📊 Average Buy NAV")
 
     # Weighted average NAV = sum(Units * NAV) / sum(Units)
     total_units = df_invest["Units"].sum()
     weighted_nav = (df_invest["Units"] * df_invest["NAV"]).sum() / total_units
 
-    col1,col2 = st.columns([1,2])
-    col1.markdown(f"<h6>Average Buy NAV</h6><p style='font-size:20px;'>₹ {weighted_nav:.2f}</p>",unsafe_allow_html=True)
+    st.metric(label="", value=f"{weighted_nav:.2f}")
 
-   # st.metric(label="Average Buy NAV", value=f"{weighted_nav:.2f}")
-    
     # Step 2: date range
     st.write("### Select NAV Date Range")
     default_start = df_invest["Date"].min().date()
@@ -408,8 +399,8 @@ if os.path.exists(file_path):
 else:
     st.error(f"No CSV file found for {selected_fund} in {BASE_FOLDER}")
     st.stop()
-    
-    
+
+
 if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
             api_url = f"https://api.mfapi.in/mf/{fund_code}?startDate={start_date}&endDate={end_date}"
             st.write(f"📡 Fetching NAV data from API...")
@@ -426,24 +417,24 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                     df_nav["nav"] = pd.to_numeric(df_nav["nav"], errors="coerce")
                     df_nav = df_nav.sort_values("date")
 
-                col1, col2 = st.columns([3, 1])
+                    col1, col2 = st.columns([3, 1])
 
 
-                # Plot interactive NAV chart
-                with col1:
-                    st.subheader(f"📈 NAV Chart: {selected_fund}")
-                    fig = px.line(df_nav, x="date", y="nav", labels={"date":"Date","nav":"NAV"}, template="plotly_white")
-                    fig.update_traces(mode="lines+markers", hovertemplate="Date: %{x}<br>NAV: %{y}")
-                    fig.update_layout(hovermode="x unified")
-                    st.plotly_chart(fig, use_container_width=True)
+                    # Plot interactive NAV chart
+                    with col1:
+                        st.subheader(f"📈 NAV Chart: {selected_fund}")
+                        fig = px.line(df_nav, x="date", y="nav", labels={"date":"Date","nav":"NAV"}, template="plotly_white")
+                        fig.update_traces(mode="lines+markers", hovertemplate="Date: %{x}<br>NAV: %{y}")
+                        fig.update_layout(hovermode="x unified")
+                        st.plotly_chart(fig, use_container_width=True)
 
-                # show NAV table
-                with col2:
-                    st.subheader("📋 NAV Table")
-                    # sort by date descending
-                    df_nav["date"] = df_nav["date"].dt.date
-                    df_nav_sorted = df_nav.sort_values(by="date", ascending=False)
-                    st.dataframe(df_nav_sorted.reset_index(drop=True), use_container_width=True)
+                    # show NAV table
+                    with col2:
+                        st.subheader("📋 NAV Table")
+                        # sort by date descending
+                        df_nav["date"] = df_nav["date"].dt.date
+                        df_nav_sorted = df_nav.sort_values(by="date", ascending=False)
+                        st.dataframe(df_nav_sorted.reset_index(drop=True), use_container_width=True)
 
                     col11, col12, col13 = st.columns([1, 2, 2])
 
@@ -759,17 +750,6 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
-
-
-
-
-
-
-
-
-
-
-
 
 
 
