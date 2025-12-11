@@ -521,12 +521,12 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                             unsafe_allow_html=True
                         )
 #####################################
-                        if latest_nav_api:
-                            result = units_to_sell_for_profit(df_invest, latest_nav_api, target_profit=125000)
-                            st.subheader("🎯 Units to Sell for Target Profit")
-                            st.metric("Units to Sell", f"{result['Units to Sell']:.2f}")
-                            st.metric("Sale Value", f"₹ {result['Sale Value']:,.2f}")
-                            st.metric("Profit Achieved", f"₹ {result['Profit Achieved']:,.2f}")
+                        # if latest_nav_api:
+                        #     result = units_to_sell_for_profit(df_invest, latest_nav_api, target_profit=125000)
+                        #     st.subheader("🎯 Units to Sell for Target Profit")
+                        #     st.metric("Units to Sell", f"{result['Units to Sell']:.2f}")
+                        #     st.metric("Sale Value", f"₹ {result['Sale Value']:,.2f}")
+                        #     st.metric("Profit Achieved", f"₹ {result['Profit Achieved']:,.2f}")
 #######################################
 
                         st.subheader("📋 Investment Details with Current Value & Gain/Loss")
@@ -663,6 +663,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
