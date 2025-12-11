@@ -318,11 +318,11 @@ if selected_fund:
     # Base folder where your CSVs are stored
     BASE_FOLDER = r"mutualfund"   # adjust to your actual folder path
 
-    st.write("### Step 1: Reading investment CSV automatically")
+#     st.write("### Step 1: Reading investment CSV automatically")
 
-# Construct file path based on fund name
+# # Construct file path based on fund name
     file_path = os.path.join(BASE_FOLDER, selected_fund, "fund.csv")
-    st.write(file_path)
+#     st.write(file_path)
 
 file_path = os.path.join(BASE_FOLDER, selected_fund, "fund.csv")
 
@@ -663,6 +663,7 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+
 
 
 
