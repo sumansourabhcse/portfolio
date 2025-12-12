@@ -266,155 +266,6 @@ def units_to_sell_for_profit(df_invest, latest_nav, target_profit=125000):
 
 ########################################################################
 
-# -----------------------
-# Overview (all funds at once)
-# -----------------------
-
-
-if overview_button:
-    st.header("📦 Complete Portfolio Overview")
-
-    BASE_FOLDER = r"mutualfund"
-
-    all_funds = []
-    per_fund_summary = []
-
-    # loop through each fund in your mutual_funds dict
-    for fund_name in mutual_funds.keys():
-        file_path = os.path.join(BASE_FOLDER, fund_name, "fund.csv")
-        if os.path.exists(file_path):
-            try:
-                with open(file_path, "rb") as f:
-                    raw = f.read()
-                dff = load_and_clean_csv_bytes(raw)
-                all_funds.append((fund_name, dff))
-            except Exception as e:
-                st.error(f"Failed to parse {fund_name}: {e}")
-                continue
-
-    if not all_funds:
-        st.error("No valid CSVs found in folders.")
-    else:
-        total_invested_all = 0.0
-        total_current_all = 0.0
-
-        for fund_name, dff in all_funds:
-            invested = dff["Amount"].sum() if "Amount" in dff.columns else 0.0
-
-            # fetch latest NAV from API if possible
-            latest_nav = None
-            latest_nav_date = None
-
-         
-            matched_code = mutual_funds.get(fund_name)
-
-            if matched_code:
-                try:
-                    api_url = f"https://api.mfapi.in/mf/{matched_code}?startDate=2020-01-01&endDate={datetime.today().strftime('%Y-%m-%d')}"
-                    
-                    r = requests.get(api_url, timeout=10)
-                    
-                    jr = r.json()
-                   
-                    if "data" in jr and jr["data"]:
-                        navs = pd.DataFrame(jr["data"])
-                        navs["date"] = pd.to_datetime(navs["date"], format="%d-%m-%Y")
-                        navs["nav"] = pd.to_numeric(navs["nav"], errors="coerce")
-                        navs = navs.sort_values("date")
-                        latest_nav = float(navs.iloc[-1]["nav"])
-                        latest_nav_date = navs.iloc[-1]["date"] 
-                      
-                except Exception:
-                    pass
-
-            if latest_nav is None and "NAV" in dff.columns and dff["NAV"].notna().any():
-                latest_nav = float(dff["NAV"].dropna().iloc[0])
-                latest_nav_date = pd.to_datetime(dff["Date"].max())
-            if latest_nav is None:
-                latest_nav = 0.0
-                latest_nav_date = None
-
-
-            units_sum = dff["Units"].sum() if "Units" in dff.columns else 0.0
-            current_value = units_sum * latest_nav
-            total_invested_all += invested
-            total_current_all += current_value
-
-            # compute XIRR for fund
-            cashflows, dates = [], []
-            for _, row in dff.iterrows():
-                if "Amount" in dff.columns and not pd.isna(row["Amount"]):
-                    cashflows.append(-float(row["Amount"]))
-                    dates.append(pd.to_datetime(row["Date"]))
-            cashflows.append(float(current_value))
-            dates.append(pd.to_datetime(dff["Date"].max()))
-            try:
-                irr = xirr(cashflows, dates)
-                irr_pct = irr * 100
-            except Exception:
-                irr_pct = None
-
-            per_fund_summary.append({
-                "Fund": fund_name,
-                "Invested": invested,
-                "Units": units_sum,
-                "Latest NAV": latest_nav,
-                "Latest NAV Date": (latest_nav_date.strftime("%Y-%m-%d") if latest_nav_date is not None else "N/A"),
-                "Current Value": current_value,
-                "XIRR (%)": (f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A")
-            })
-
-        # show portfolio metrics
-        st.subheader("Portfolio Summary")
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Total Invested", f"₹ {total_invested_all:,.2f}")
-        col2.metric("Total Current Value", f"₹ {total_current_all:,.2f}")
-        col3.metric("Total Gain/Loss", f"₹ {total_current_all - total_invested_all:,.2f}")
-
-        # per-fund table
-        st.subheader("Per-fund Summary")
-        df_summary = pd.DataFrame(per_fund_summary).sort_values("Current Value", ascending=False).reset_index(drop=True)
-        st.dataframe(df_summary, width=1000)
-
-        # Allocation pie
-        st.subheader("Allocation: Current Value by Fund")
-        figp = px.pie(df_summary, names="Fund", values="Current Value", title="Portfolio Allocation")
-        st.plotly_chart(figp, use_container_width=True)
-
-        # Overall XIRR
-        all_cashflows, all_dates = [], []
-        for fund_name, dff in all_funds:
-            for _, row in dff.iterrows():
-                if "Amount" in dff.columns and not pd.isna(row["Amount"]):
-                    all_cashflows.append(-float(row["Amount"]))
-                    all_dates.append(pd.to_datetime(row["Date"]))
-        overall_final_date = max([dff["Date"].max() for (_, dff) in all_funds])
-        all_cashflows.append(float(total_current_all))
-        all_dates.append(pd.to_datetime(overall_final_date))
-        try:
-            overall_irr = xirr(all_cashflows, all_dates)
-            st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
-        except Exception:
-            st.metric("Portfolio XIRR (annual)", "N/A")
-            
-    if st.button("💾 Save Daily Portfolio Snapshot to GitHub"):
-        today = datetime.today().strftime("%Y-%m-%d")
-        snapshot = {
-            "Date": today,
-            "Total Invested": total_invested_all,
-            "Total Current Value": total_current_all,
-            "Gain/Loss": total_current_all - total_invested_all
-        }
-            # logic to save/update snapshot
-
-
-
-
-
-
-
-
-
 ##########################################################################
 # ---------------------------------------
 # Single fund flow (your original UI) - unchanged behaviour + XIRR added
@@ -737,58 +588,144 @@ if st.button("Fetch NAV Data", key=f"fetch_{selected_fund}"):
                         # df_invest_current['Date'] = pd.to_datetime(df_invest_current['Date']).dt.date
                         # st.dataframe(df_invest_current.sort_values("Date", ascending=False).reset_index(drop=True), width=1000)
 
+# -----------------------
+# Overview (all funds at once)
+# -----------------------
 
 
+if overview_button:
+    st.header("📦 Complete Portfolio Overview")
+
+    BASE_FOLDER = r"mutualfund"
+
+    all_funds = []
+    per_fund_summary = []
+
+    # loop through each fund in your mutual_funds dict
+    for fund_name in mutual_funds.keys():
+        file_path = os.path.join(BASE_FOLDER, fund_name, "fund.csv")
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "rb") as f:
+                    raw = f.read()
+                dff = load_and_clean_csv_bytes(raw)
+                all_funds.append((fund_name, dff))
+            except Exception as e:
+                st.error(f"Failed to parse {fund_name}: {e}")
+                continue
+
+    if not all_funds:
+        st.error("No valid CSVs found in folders.")
+    else:
+        total_invested_all = 0.0
+        total_current_all = 0.0
+
+        for fund_name, dff in all_funds:
+            invested = dff["Amount"].sum() if "Amount" in dff.columns else 0.0
+
+            # fetch latest NAV from API if possible
+            latest_nav = None
+            latest_nav_date = None
+
+         
+            matched_code = mutual_funds.get(fund_name)
+
+            if matched_code:
+                try:
+                    api_url = f"https://api.mfapi.in/mf/{matched_code}?startDate=2020-01-01&endDate={datetime.today().strftime('%Y-%m-%d')}"
+                    
+                    r = requests.get(api_url, timeout=10)
+                    
+                    jr = r.json()
+                   
+                    if "data" in jr and jr["data"]:
+                        navs = pd.DataFrame(jr["data"])
+                        navs["date"] = pd.to_datetime(navs["date"], format="%d-%m-%Y")
+                        navs["nav"] = pd.to_numeric(navs["nav"], errors="coerce")
+                        navs = navs.sort_values("date")
+                        latest_nav = float(navs.iloc[-1]["nav"])
+                        latest_nav_date = navs.iloc[-1]["date"] 
+                      
+                except Exception:
+                    pass
+
+            if latest_nav is None and "NAV" in dff.columns and dff["NAV"].notna().any():
+                latest_nav = float(dff["NAV"].dropna().iloc[0])
+                latest_nav_date = pd.to_datetime(dff["Date"].max())
+            if latest_nav is None:
+                latest_nav = 0.0
+                latest_nav_date = None
 
 
+            units_sum = dff["Units"].sum() if "Units" in dff.columns else 0.0
+            current_value = units_sum * latest_nav
+            total_invested_all += invested
+            total_current_all += current_value
 
+            # compute XIRR for fund
+            cashflows, dates = [], []
+            for _, row in dff.iterrows():
+                if "Amount" in dff.columns and not pd.isna(row["Amount"]):
+                    cashflows.append(-float(row["Amount"]))
+                    dates.append(pd.to_datetime(row["Date"]))
+            cashflows.append(float(current_value))
+            dates.append(pd.to_datetime(dff["Date"].max()))
+            try:
+                irr = xirr(cashflows, dates)
+                irr_pct = irr * 100
+            except Exception:
+                irr_pct = None
 
+            per_fund_summary.append({
+                "Fund": fund_name,
+                "Invested": invested,
+                "Units": units_sum,
+                "Latest NAV": latest_nav,
+                "Latest NAV Date": (latest_nav_date.strftime("%Y-%m-%d") if latest_nav_date is not None else "N/A"),
+                "Current Value": current_value,
+                "XIRR (%)": (f"{irr_pct:.2f}%" if isinstance(irr_pct, (int, float)) and not math.isnan(irr_pct) else "N/A")
+            })
 
+        # show portfolio metrics
+        st.subheader("Portfolio Summary")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Invested", f"₹ {total_invested_all:,.2f}")
+        col2.metric("Total Current Value", f"₹ {total_current_all:,.2f}")
+        col3.metric("Total Gain/Loss", f"₹ {total_current_all - total_invested_all:,.2f}")
 
+        # per-fund table
+        st.subheader("Per-fund Summary")
+        df_summary = pd.DataFrame(per_fund_summary).sort_values("Current Value", ascending=False).reset_index(drop=True)
+        st.dataframe(df_summary, width=1000)
 
+        # Allocation pie
+        st.subheader("Allocation: Current Value by Fund")
+        figp = px.pie(df_summary, names="Fund", values="Current Value", title="Portfolio Allocation")
+        st.plotly_chart(figp, use_container_width=True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # Overall XIRR
+        all_cashflows, all_dates = [], []
+        for fund_name, dff in all_funds:
+            for _, row in dff.iterrows():
+                if "Amount" in dff.columns and not pd.isna(row["Amount"]):
+                    all_cashflows.append(-float(row["Amount"]))
+                    all_dates.append(pd.to_datetime(row["Date"]))
+        overall_final_date = max([dff["Date"].max() for (_, dff) in all_funds])
+        all_cashflows.append(float(total_current_all))
+        all_dates.append(pd.to_datetime(overall_final_date))
+        try:
+            overall_irr = xirr(all_cashflows, all_dates)
+            st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
+        except Exception:
+            st.metric("Portfolio XIRR (annual)", "N/A")
+            
+    # if st.button("💾 Save Daily Portfolio Snapshot to GitHub"):
+    #     today = datetime.today().strftime("%Y-%m-%d")
+    #     snapshot = {
+    #         "Date": today,
+    #         "Total Invested": total_invested_all,
+    #         "Total Current Value": total_current_all,
+    #         "Gain/Loss": total_current_all - total_invested_all
+    #     }
+    #         # logic to save/update snapshot
 
