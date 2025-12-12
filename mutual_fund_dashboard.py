@@ -718,6 +718,11 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", f"{overall_irr*100:.2f}%")
         except Exception:
             st.metric("Portfolio XIRR (annual)", "N/A")
+            
+    if st.button("💾 Save Daily Portfolio Snapshot to GitHub"):
+    # logic to save/update snapshot
+
+
 
 
 
