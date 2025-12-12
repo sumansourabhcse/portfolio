@@ -720,7 +720,15 @@ if overview_button:
             st.metric("Portfolio XIRR (annual)", "N/A")
             
     if st.button("💾 Save Daily Portfolio Snapshot to GitHub"):
-    # logic to save/update snapshot
+        today = datetime.today().strftime("%Y-%m-%d")
+        snapshot = {
+            "Date": today,
+            "Total Invested": total_invested_all,
+            "Total Current Value": total_current_all,
+            "Gain/Loss": total_current_all - total_invested_all
+        }
+            # logic to save/update snapshot
+
 
 
 
